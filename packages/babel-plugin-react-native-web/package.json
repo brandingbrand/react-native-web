@@ -1,5 +1,5 @@
 {
-  "name": "babel-plugin-react-native-web",
+  "name": "@brandingbrand/babel-plugin-react-native-web",
   "version": "0.3.1",
   "description": "Babel plugin for React Native for Web",
   "main": "index.js",
@@ -10,6 +10,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/necolas/react-native-web.git"
+    "url": "git://github.com/brandingbrand/react-native-web.git"
   }
 }

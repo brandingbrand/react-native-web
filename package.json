@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "react-native-web-monorepo",
+  "name": "@brandingbrand/react-native-web-monorepo",
   "scripts": {
     "benchmark": "cd packages/benchmarks && yarn benchmark",
     "clean": "del ./packages/*/dist",

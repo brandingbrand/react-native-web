@@ -1,5 +1,5 @@
 {
-  "name": "react-native-web",
+  "name": "@brandingbrand/react-native-web",
   "version": "0.3.1",
   "description": "React Native for Web",
   "main": "dist/index.js",
@@ -30,7 +30,7 @@
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "git://github.com/necolas/react-native-web.git"
+    "url": "git://github.com/brandingbrand/react-native-web.git"
   },
   "tags": [
     "react"
