@@ -337,6 +337,8 @@ const TouchableMixin = {
    */
   componentWillUnmount: function() {
     this._touchableNode.removeEventListener('blur', this._touchableBlurListener);
+    window.removeEventListener('scroll', this._handleScroll);
+
     this.touchableDelayTimeout && clearTimeout(this.touchableDelayTimeout);
     this.longPressDelayTimeout && clearTimeout(this.longPressDelayTimeout);
     this.pressOutDelayTimeout && clearTimeout(this.pressOutDelayTimeout);
@@ -419,6 +421,12 @@ const TouchableMixin = {
    * Place as callback for a DOM element's `onResponderRelease` event.
    */
   touchableHandleResponderRelease: function(e: Event) {
+    // If we're not in a responder state (because the user has scrolled)
+    // do nothing.
+    if (this.state.touchable.touchState === States.NOT_RESPONDER) {
+      return;
+    }
+  
     this._receiveSignal(Signals.RESPONDER_RELEASE, e);
     // Browsers fire mouse events after touch events. This causes the
     // 'onResponderRelease' handler to be called twice for Touchables.
@@ -451,6 +459,12 @@ const TouchableMixin = {
       return;
     }
 
+    // If we're not in a responder state (because the user has scrolled)
+    // do nothing.
+    if (this.state.touchable.touchState === States.NOT_RESPONDER) {
+      return;
+    }
+  
     const positionOnActivate = this.state.touchable.positionOnActivate;
     const dimensionsOnActivate = this.state.touchable.dimensionsOnActivate;
     const pressRectOffset = this.touchableGetPressRectOffset
@@ -643,6 +657,16 @@ const TouchableMixin = {
   },
 
   /**
+   * Will terminate the responder if the receiver is currently active.
+   */
+  _handleScroll: function(e: Event) {
+    const curState = this.state.touchable.touchState;
+    if (curState !== States.NOT_RESPONDER) {
+      this._receiveSignal(Signals.RESPONDER_TERMINATED, e);      
+    }
+  },
+
+  /**
    * Receives a state machine signal, performs side effects of the transition
    * and stores the new state. Validates the transition as well.
    *
@@ -731,11 +755,17 @@ const TouchableMixin = {
     const curIsHighlight = this._isHighlight(curState);
     const newIsHighlight = this._isHighlight(nextState);
 
+    const isFirstSignal = signal === Signals.RESPONDER_GRANT;
     const isFinalSignal =
       signal === Signals.RESPONDER_TERMINATED || signal === Signals.RESPONDER_RELEASE;
 
-    if (isFinalSignal) {
+    if (isFirstSignal) {
+      // Start listening for window scroll events so we can terminate if the user
+      // scrolls the page while a touch is down
+      window.addEventListener('scroll', this._handleScroll);
+    } else if (isFinalSignal) {
       this._cancelLongPressDelayTimeout();
+      window.removeEventListener('scroll', this._handleScroll);
     }
 
     if (!IsActive[curState] && IsActive[nextState]) {
