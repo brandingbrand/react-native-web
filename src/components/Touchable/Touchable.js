@@ -249,6 +249,9 @@ const LONG_PRESS_DELAY_MS = LONG_PRESS_THRESHOLD - HIGHLIGHT_DELAY_MS;
 
 const LONG_PRESS_ALLOWED_MOVEMENT = 10;
 
+let lastScrollStart; // Will be set to the time of the last occurrence of a scroll event
+const AFTER_SCROLL_DELAY_MS = 400; // Delay in ms before permitting touch after scroll
+
 // Default amount "active" region protrudes beyond box
 
 /**
@@ -393,6 +396,14 @@ const TouchableMixin = {
 
     this.state.touchable.touchState = States.NOT_RESPONDER;
     this.state.touchable.responderID = dispatchID;
+
+    // Attempt to prevent errant presses when scrolling by setting a short
+    // delay (AFTER_SCROLL_DELAY_MS) before touches can be registered after
+    // scrolling has completed.
+    if (lastScrollStart && ((new Date().getTime() - lastScrollStart) < AFTER_SCROLL_DELAY_MS)) {
+      return;
+    }
+
     this._receiveSignal(Signals.RESPONDER_GRANT, e);
     let delayMS =
       this.touchableGetHighlightDelayMS !== undefined
@@ -660,9 +671,11 @@ const TouchableMixin = {
    * Will terminate the responder if the receiver is currently active.
    */
   _handleScroll: function(e: Event) {
+    lastScrollStart = new Date().getTime();
     const curState = this.state.touchable.touchState;
+
     if (curState !== States.NOT_RESPONDER) {
-      this._receiveSignal(Signals.RESPONDER_TERMINATED, e);      
+      this._receiveSignal(Signals.RESPONDER_TERMINATED, e);
     }
   },
 
