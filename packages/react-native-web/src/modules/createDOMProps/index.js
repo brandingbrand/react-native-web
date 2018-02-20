@@ -1,8 +1,7 @@
 /**
  * Copyright (c) 2015-present, Nicolas Gallagher.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
+ * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  * @noflow
@@ -10,7 +9,7 @@
 
 import AccessibilityUtil from '../AccessibilityUtil';
 import StyleSheet from '../../exports/StyleSheet';
-import StyleRegistry from '../../exports/StyleSheet/registry';
+import styleResolver from '../../exports/StyleSheet/styleResolver';
 
 const emptyObject = {};
 
@@ -53,7 +52,7 @@ const pointerEventsStyles = StyleSheet.create({
   }
 });
 
-const defaultStyleResolver = style => StyleRegistry.resolve(style);
+const defaultStyleResolver = style => styleResolver.resolve(style);
 
 const createDOMProps = (component, props, styleResolver) => {
   if (!styleResolver) {
@@ -68,6 +67,7 @@ const createDOMProps = (component, props, styleResolver) => {
     accessibilityLabel,
     accessibilityLiveRegion,
     importantForAccessibility,
+    placeholderTextColor,
     pointerEvents,
     style: providedStyle,
     testID,
@@ -89,8 +89,9 @@ const createDOMProps = (component, props, styleResolver) => {
     role === 'heading' && resetStyles.heading,
     component === 'ul' && resetStyles.list,
     role === 'button' && !isDisabled && resetStyles.ariaButton,
+    pointerEvents && pointerEventsStyles[pointerEvents],
     providedStyle,
-    pointerEvents && pointerEventsStyles[pointerEvents]
+    placeholderTextColor && { placeholderTextColor }
   ];
   const { className, style } = styleResolver(reactNativeStyle);
 

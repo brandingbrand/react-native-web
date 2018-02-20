@@ -15,11 +15,28 @@ const reactNativeStyle = {
   resizeMode: 'contain'
 };
 
-describe('apis/StyleSheet/createReactDOMStyle', () => {
+describe('StyleSheet/createReactDOMStyle', () => {
   test('noop on DOM styles', () => {
     const firstStyle = createReactDOMStyle(reactNativeStyle);
     const secondStyle = createReactDOMStyle(firstStyle);
     expect(firstStyle).toEqual(secondStyle);
+  });
+
+  test('shortform -> longform', () => {
+    const style = {
+      borderStyle: 'solid',
+      boxSizing: 'border-box',
+      borderBottomColor: 'white',
+      borderBottomWidth: 1,
+      borderWidth: 0,
+      marginTop: 50,
+      marginVertical: 25,
+      margin: 10,
+      overflow: 'hidden',
+      overscrollBehavior: 'contain'
+    };
+
+    expect(createReactDOMStyle(style)).toMatchSnapshot();
   });
 
   describe('borderWidth styles', () => {
@@ -134,21 +151,10 @@ describe('apis/StyleSheet/createReactDOMStyle', () => {
     });
   });
 
-  test('shortform -> longform', () => {
-    const style = {
-      borderStyle: 'solid',
-      boxSizing: 'border-box',
-      borderBottomColor: 'white',
-      borderBottomWidth: 1,
-      borderWidth: 0,
-      marginTop: 50,
-      marginVertical: 25,
-      margin: 10,
-      overflow: 'hidden',
-      overscrollBehavior: 'contain'
-    };
-
-    expect(createReactDOMStyle(style)).toMatchSnapshot();
+  test('fontVariant', () => {
+    expect(createReactDOMStyle({ fontVariant: ['common-ligatures', 'small-caps'] })).toEqual({
+      fontVariant: 'common-ligatures small-caps'
+    });
   });
 
   describe('shadow styles', () => {

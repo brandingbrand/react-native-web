@@ -13,7 +13,7 @@ const isPlainObject = x => {
   /* eslint-enable */
 };
 
-describe('apis/StyleSheet', () => {
+describe('StyleSheet', () => {
   test('absoluteFill', () => {
     expect(Number.isInteger(StyleSheet.absoluteFill) === true).toBeTruthy();
   });
@@ -47,9 +47,5 @@ describe('apis/StyleSheet', () => {
 
   test('hairlineWidth', () => {
     expect(Number.isInteger(StyleSheet.hairlineWidth) === true).toBeTruthy();
-  });
-
-  test('getStyleSheets', () => {
-    expect(StyleSheet.getStyleSheets()).toMatchSnapshot();
   });
 });

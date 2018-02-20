@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2015-present, Nicolas Gallagher.
  * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
+ * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  * @providesModule flattenStyle
@@ -24,7 +23,7 @@ function getStyle(style) {
 }
 
 function flattenStyle(style: ?StyleObj): ?Object {
-  if (style == null || typeof style === 'boolean') {
+  if (!style) {
     return undefined;
   }
 
@@ -33,6 +32,7 @@ function flattenStyle(style: ?StyleObj): ?Object {
   }
 
   if (!Array.isArray(style)) {
+    // $FlowFixMe
     return getStyle(style);
   }
 

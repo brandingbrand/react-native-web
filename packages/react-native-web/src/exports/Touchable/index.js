@@ -3,9 +3,8 @@
 /**
  * Copyright (c) 2016-present, Nicolas Gallagher.
  * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
+ * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  * @providesModule Touchable
@@ -434,13 +433,6 @@ const TouchableMixin = {
     }
   
     this._receiveSignal(Signals.RESPONDER_RELEASE, e);
-    // Browsers fire mouse events after touch events. This causes the
-    // 'onResponderRelease' handler to be called twice for Touchables.
-    // Auto-fix this issue by calling 'preventDefault' to cancel the mouse
-    // events.
-    if (e.cancelable && !e.isDefaultPrevented()) {
-      e.preventDefault();
-    }
   },
 
   /**
