@@ -74,7 +74,7 @@ yarn compile --watch
 To run the interactive storybook:
 
 ```
-yarn docs:start
+yarn website
 ```
 
 When you're also making changes to the 'react-native-web' source files, run this command in another process:
@@ -85,10 +85,18 @@ yarn compile --watch
 
 ## Benchmarks
 
-To run the performance benchmarks in a browser (opening `./packages/benchmarks/index.html`):
+To run the benchmarks locally:
 
 ```
-yarn benchmark
+yarn benchmarks
+open ./packages/benchmarks/dist/index.html
+```
+
+To develop against these benchmarks:
+
+```
+yarn compile --watch
+yarn benchmarks --watch
 ```
 
 ### New Features

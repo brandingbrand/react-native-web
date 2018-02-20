@@ -14,6 +14,7 @@ import PropMultiline from './examples/PropMultiline';
 import PropNumberOfLines from './examples/PropNumberOfLines';
 import PropOnSelectionChange from './examples/PropOnSelectionChange';
 import PropPlaceholder from './examples/PropPlaceholder';
+import PropPlaceholderTextColor from './examples/PropPlaceholderTextColor';
 import PropSecureTextEntry from './examples/PropSecureTextEntry';
 import PropSelectTextOnFocus from './examples/PropSelectTextOnFocus';
 import TextInputEvents from './examples/TextInputEvents';
@@ -95,7 +96,7 @@ const TextInputScreen = () => (
       <DocItem
         name="autoCorrect"
         typeInfo="?boolean = true"
-        description="Automatically correct spelling mistakes (only available in iOS Safari)."
+        description="Automatically correct spelling mistakes. (Only available in iOS Safari.)"
       />
 
       <DocItem
@@ -219,10 +220,11 @@ const TextInputScreen = () => (
             Callback that is called when a key is pressed. This will be called with{' '}
             <Code>{`{
 nativeEvent: { key: keyValue } }`}</Code>{' '}
-            where keyValue is <Code>Enter</Code> or <Code>Backspace</Code> for respective keys and
-            the typed-in character otherwise including <Code>' '</Code>
-            for space. Modifier keys (e.g., <Code>shiftKey</Code>) are also included in the{' '}
-            <Code>nativeEvent</Code>. Fires before <Code>onChange</Code> callbacks.
+            where keyValue is <Code>Enter</Code>, <Code>Backspace</Code>, <Code>Tab</Code>,{' '}
+            <Code>{'Arrow{Up,Right,Down,Left}'}</Code> for respective keys and the typed-in
+            character otherwise including <Code>' '</Code> for space. Modifier keys (e.g.,{' '}
+            <Code>shiftKey</Code>) are also included in the <Code>nativeEvent</Code>. Fires before{' '}
+            <Code>onChange</Code> callbacks.
           </AppText>
         }
       />
@@ -263,6 +265,15 @@ nativeEvent: { key: keyValue } }`}</Code>{' '}
       />
 
       <DocItem
+        name="placeholderTextColor"
+        typeInfo="?color"
+        description="The text color of the placeholder string."
+        example={{
+          render: () => <PropPlaceholderTextColor />
+        }}
+      />
+
+      <DocItem
         name="secureTextEntry"
         typeInfo="?boolean = false"
         description="If true, the text input obscures the text entered so that sensitive text like passwords stay secure. (Not available when `multiline` is `true`.)"
@@ -284,6 +295,12 @@ nativeEvent: { key: keyValue } }`}</Code>{' '}
         example={{
           render: () => <PropSelectTextOnFocus />
         }}
+      />
+
+      <DocItem
+        name="spellCheck"
+        typeInfo="?boolean"
+        description="If false, disables spell-check style (i.e. red underlines). The default value is inherited from autoCorrect. (Only available in supporting browsers)."
       />
 
       <DocItem

@@ -1,9 +1,8 @@
 /**
  * Copyright (c) 2016-present, Nicolas Gallagher.
  * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
+ * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  * @providesModule ActivityIndicator
@@ -88,7 +87,12 @@ const styles = StyleSheet.create({
   },
   animation: {
     animationDuration: '0.75s',
-    animationName: 'rn-ActivityIndicator-animation',
+    animationName: [
+      {
+        '0%': { transform: [{ rotate: '0deg' }] },
+        '100%': { transform: [{ rotate: '360deg' }] }
+      }
+    ],
     animationTimingFunction: 'linear',
     animationIterationCount: 'infinite'
   },

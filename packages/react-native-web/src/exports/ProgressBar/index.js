@@ -1,8 +1,7 @@
 /**
  * Copyright (c) 2016-present, Nicolas Gallagher.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
+ * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  * @providesModule ProgressBar
@@ -96,7 +95,12 @@ const styles = StyleSheet.create({
   },
   animation: {
     animationDuration: '1s',
-    animationName: 'rn-ProgressBar-animation',
+    animationName: [
+      {
+        '0%': { transform: [{ translateX: '-100%' }] },
+        '100%': { transform: [{ translateX: '400%' }] }
+      }
+    ],
     animationTimingFunction: 'linear',
     animationIterationCount: 'infinite'
   }

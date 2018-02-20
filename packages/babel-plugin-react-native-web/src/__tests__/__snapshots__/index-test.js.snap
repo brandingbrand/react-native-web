@@ -41,7 +41,7 @@ import * as ReactNativeModules from 'react-native';
 
 import ReactNative from 'react-native-web/dist/index';
 import View from 'react-native-web/dist/exports/View';
-import Invalid from 'react-native-web/dist/exports/Invalid';
+import { Invalid } from 'react-native-web/dist/index';
 import MyView from 'react-native-web/dist/exports/View';
 import ViewPropTypes from 'react-native-web/dist/exports/ViewPropTypes';
 import * as ReactNativeModules from 'react-native-web/dist/index';
@@ -66,6 +66,24 @@ import * as ReactNativeModules from 'react-native-web/dist/index';
 "
 `;
 
+exports[`require "react-native" 1`] = `
+"
+const ReactNative = require('react-native');
+const { View } = require('react-native');
+const {  StyleSheet, TouchableOpacity } = require('react-native');
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+const ReactNative = require('react-native-web/dist/index').default;
+
+const View = require('react-native-web/dist/exports/View').default;
+
+const StyleSheet = require('react-native-web/dist/exports/StyleSheet').default;
+
+const TouchableOpacity = require('react-native-web/dist/exports/TouchableOpacity').default;
+"
+`;
+
 exports[`require "react-native-web" 1`] = `
 "
 const ReactNative = require('react-native-web');
@@ -74,18 +92,18 @@ const { ColorPropType, StyleSheet, View, TouchableOpacity, processColor } = requ
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-const ReactNative = require('react-native-web');
+const ReactNative = require('react-native-web/dist/index').default;
 
-const createElement = require('react-native-web/dist/exports/createElement');
+const createElement = require('react-native-web/dist/exports/createElement').default;
 
-const ColorPropType = require('react-native-web/dist/exports/ColorPropType');
+const ColorPropType = require('react-native-web/dist/exports/ColorPropType').default;
 
-const StyleSheet = require('react-native-web/dist/exports/StyleSheet');
+const StyleSheet = require('react-native-web/dist/exports/StyleSheet').default;
 
-const View = require('react-native-web/dist/exports/View');
+const View = require('react-native-web/dist/exports/View').default;
 
-const TouchableOpacity = require('react-native-web/dist/exports/TouchableOpacity');
+const TouchableOpacity = require('react-native-web/dist/exports/TouchableOpacity').default;
 
-const processColor = require('react-native-web/dist/exports/processColor');
+const processColor = require('react-native-web/dist/exports/processColor').default;
 "
 `;

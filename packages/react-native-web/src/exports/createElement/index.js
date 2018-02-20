@@ -1,8 +1,7 @@
 /**
  * Copyright (c) 2015-present, Nicolas Gallagher.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
+ * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  * @noflow
@@ -22,18 +21,12 @@ import React from 'react';
  * and remove event handlers when disabled.
  */
 const eventHandlerNames = {
+  onBlur: true,
   onClick: true,
   onClickCapture: true,
-  onMoveShouldSetResponder: true,
-  onMoveShouldSetResponderCapture: true,
-  onResponderGrant: true,
-  onResponderMove: true,
-  onResponderReject: true,
+  onContextMenu: true,
+  onFocus: true,
   onResponderRelease: true,
-  onResponderTerminate: true,
-  onResponderTerminationRequest: true,
-  onStartShouldSetResponder: true,
-  onStartShouldSetResponderCapture: true,
   onTouchCancel: true,
   onTouchCancelCapture: true,
   onTouchEnd: true,
@@ -53,6 +46,17 @@ const adjustProps = domProps => {
     if (isEventHandler) {
       if (isButtonRole && isDisabled) {
         domProps[propName] = undefined;
+      } else if (propName === 'onResponderRelease') {
+        // Browsers fire mouse events after touch events. This causes the
+        // 'onResponderRelease' handler to be called twice for Touchables.
+        // Auto-fix this issue by calling 'preventDefault' to cancel the mouse
+        // events.
+        domProps[propName] = e => {
+          if (e.cancelable && !e.isDefaultPrevented()) {
+            e.preventDefault();
+          }
+          return prop(e);
+        };
       } else {
         // TODO: move this out of the render path
         domProps[propName] = e => {

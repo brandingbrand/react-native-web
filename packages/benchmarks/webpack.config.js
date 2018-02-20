@@ -7,10 +7,10 @@ const appDirectory = path.resolve(__dirname);
 
 module.exports = {
   context: __dirname,
-  entry: ['babel-polyfill', './src/index'],
+  entry: './src/index',
   output: {
     path: path.resolve(appDirectory, 'dist'),
-    filename: 'performance.bundle.js'
+    filename: 'bundle.js'
   },
   module: {
     rules: [
@@ -30,9 +30,9 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            cacheDirectory: true,
+            cacheDirectory: false,
             presets: babelPreset,
-            plugins: ['react-native-web']
+            plugins: ['react-native-web', 'styled-jsx/babel']
           }
         }
       }
@@ -49,14 +49,10 @@ module.exports = {
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         dead_code: true,
+        drop_console: false,
         screw_ie8: true,
         warnings: false
       }
     })
-  ],
-  resolve: {
-    alias: {
-      'react-native': 'react-native-web'
-    }
-  }
+  ]
 };
