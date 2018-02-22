@@ -1,11 +1,12 @@
 /* eslint-env jasmine, jest */
 
+import ExecutionEnvironment from 'fbjs/lib/ExecutionEnvironment';
 import Image from '../';
-import ImageLoader from '../../../modules/ImageLoader';
 import ImageUriCache from '../ImageUriCache';
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { mount, render } from 'enzyme';
 
+const originalCanUseDOM = ExecutionEnvironment.canUseDOM;
 const originalImage = window.Image;
 
 describe('components/Image', () => {
@@ -17,39 +18,39 @@ describe('components/Image', () => {
     window.Image = originalImage;
   });
 
+  test('sets correct accessibility role"', () => {
+    const component = render(<Image />);
+    expect(component).toMatchSnapshot();
+  });
+
   test('prop "accessibilityLabel"', () => {
-    const defaultSource = { uri: 'https://google.com/favicon.ico' };
-    const component = shallow(
-      <Image accessibilityLabel="accessibilityLabel" defaultSource={defaultSource} />
-    );
-    const img = component.find('img');
-    expect(component.prop('accessibilityLabel')).toBe('accessibilityLabel');
-    expect(img.prop('alt')).toBe('accessibilityLabel');
+    const component = render(<Image accessibilityLabel="accessibilityLabel" />);
+    expect(component).toMatchSnapshot();
   });
 
   test('prop "accessible"', () => {
-    const component = shallow(<Image accessible={false} />);
-    expect(component.prop('accessible')).toBe(false);
+    const component = render(<Image accessible={false} />);
+    expect(component).toMatchSnapshot();
   });
 
   test('prop "children"', () => {
     const children = <div className="unique" />;
-    const component = shallow(<Image children={children} />);
-    expect(component.find('.unique').length).toBe(1);
+    const component = render(<Image children={children} />);
+    expect(component).toMatchSnapshot();
   });
 
   describe('prop "defaultSource"', () => {
     test('sets background image when value is an object', () => {
       const defaultSource = { uri: 'https://google.com/favicon.ico' };
-      const component = shallow(<Image defaultSource={defaultSource} />);
-      expect(component.prop('style').backgroundImage).toMatchSnapshot();
+      const component = render(<Image defaultSource={defaultSource} />);
+      expect(component).toMatchSnapshot();
     });
 
     test('sets background image when value is a string', () => {
       // emulate require-ed asset
       const defaultSource = 'https://google.com/favicon.ico';
-      const component = shallow(<Image defaultSource={defaultSource} />);
-      expect(component.prop('style').backgroundImage).toMatchSnapshot();
+      const component = render(<Image defaultSource={defaultSource} />);
+      expect(component).toMatchSnapshot();
     });
 
     test('sets "height" and "width" styles if missing', () => {
@@ -58,10 +59,8 @@ describe('components/Image', () => {
         height: 10,
         width: 20
       };
-      const component = shallow(<Image defaultSource={defaultSource} />);
-      const { height, width } = component.prop('style');
-      expect(height).toBe(10);
-      expect(width).toBe(20);
+      const component = render(<Image defaultSource={defaultSource} />);
+      expect(component).toMatchSnapshot();
     });
 
     test('does not override "height" and "width" styles', () => {
@@ -70,21 +69,11 @@ describe('components/Image', () => {
         height: 10,
         width: 20
       };
-      const component = shallow(
+      const component = render(
         <Image defaultSource={defaultSource} style={{ height: 20, width: 40 }} />
       );
-      const { height, width } = component.prop('style');
-      expect(height).toBe(20);
-      expect(width).toBe(40);
+      expect(component).toMatchSnapshot();
     });
-  });
-
-  test('prop "draggable"', () => {
-    const defaultSource = { uri: 'https://google.com/favicon.ico' };
-    const component = shallow(<Image defaultSource={defaultSource} />);
-    expect(component.find('img').prop('draggable')).toBeUndefined();
-    component.setProps({ defaultSource, draggable: false });
-    expect(component.find('img').prop('draggable')).toBe(false);
   });
 
   describe('prop "resizeMode"', () => {
@@ -96,8 +85,8 @@ describe('components/Image', () => {
       undefined
     ].forEach(resizeMode => {
       test(`value "${resizeMode}"`, () => {
-        const component = shallow(<Image resizeMode={resizeMode} />);
-        expect(component.prop('style').backgroundSize).toMatchSnapshot();
+        const component = render(<Image resizeMode={resizeMode} />);
+        expect(component).toMatchSnapshot();
       });
     });
   });
@@ -106,7 +95,7 @@ describe('components/Image', () => {
     test('is not set immediately if the image has not already been loaded', () => {
       const uri = 'https://google.com/favicon.ico';
       const source = { uri };
-      const component = shallow(<Image source={source} />);
+      const component = render(<Image source={source} />);
       expect(component.find('img')).toBeUndefined;
     });
 
@@ -136,57 +125,32 @@ describe('components/Image', () => {
           .attr('src')
       ).toBe(uriTwo);
     });
+
+    test('is set immediately when rendered on the server', () => {
+      ExecutionEnvironment.canUseDOM = false;
+      const uri = 'https://google.com/favicon.ico';
+      const component = render(<Image source={{ uri }} />);
+      expect(component.find('img').attr('src')).toBe(uri);
+      expect(ImageUriCache.has(uri)).toBe(true);
+      ExecutionEnvironment.canUseDOM = originalCanUseDOM;
+    });
   });
 
   describe('prop "style"', () => {
     test('correctly supports "resizeMode" property', () => {
-      const component = shallow(<Image style={{ resizeMode: Image.resizeMode.contain }} />);
-      expect(component.prop('style').backgroundSize).toMatchSnapshot();
-    });
-
-    test('removes other unsupported View styles', () => {
-      const component = shallow(<Image style={{ overlayColor: 'red', tintColor: 'blue' }} />);
-      expect(component.props().style.overlayColor).toBeUndefined();
-      expect(component.props().style.tintColor).toBeUndefined();
+      const component = render(<Image style={{ resizeMode: Image.resizeMode.contain }} />);
+      expect(component).toMatchSnapshot();
     });
   });
 
   test('prop "testID"', () => {
-    const component = shallow(<Image testID="testID" />);
-    expect(component.prop('testID')).toBe('testID');
-  });
-
-  describe('prop "onLoad"', () => {
-    test('fires after image is loaded', () => {
-      jest.useFakeTimers();
-      ImageLoader.load = jest.fn().mockImplementation((_, onLoad, onError) => {
-        onLoad();
-      });
-      const onLoadStub = jest.fn();
-      shallow(<Image onLoad={onLoadStub} source="https://test.com/img.jpg" />);
-      jest.runOnlyPendingTimers();
-      expect(ImageLoader.load).toBeCalled();
-      expect(onLoadStub).toBeCalled();
-    });
-
-    test('fires even if the image is cached', () => {
-      jest.useFakeTimers();
-      ImageLoader.load = jest.fn().mockImplementation((_, onLoad, onError) => {
-        onLoad();
-      });
-      const onLoadStub = jest.fn();
-      const uri = 'https://test.com/img.jpg';
-      shallow(<Image onLoad={onLoadStub} source={uri} />);
-      ImageUriCache.add(uri);
-      jest.runOnlyPendingTimers();
-      expect(ImageLoader.load).not.toBeCalled();
-      expect(onLoadStub).toBeCalled();
-    });
+    const component = render(<Image testID="testID" />);
+    expect(component).toMatchSnapshot();
   });
 
   test('passes other props through to underlying View', () => {
     const fn = () => {};
-    const component = shallow(<Image onResponderGrant={fn} />);
-    expect(component.prop('onResponderGrant')).toBe(fn);
+    const component = render(<Image onResponderGrant={fn} />);
+    expect(component).toMatchSnapshot();
   });
 });
