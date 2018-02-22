@@ -48,11 +48,13 @@ const ImageLoader = {
   },
   load(uri, onLoad, onError): number {
     id += 1;
-    const image = new window.Image();
-    image.onerror = onError;
-    image.onload = onLoad;
-    image.src = uri;
-    requests[`${id}`] = image;
+    if (typeof window !== 'undefined') {
+      const image = new window.Image();
+      image.onerror = onError;
+      image.onload = onLoad;
+      image.src = uri;
+      requests[`${id}`] = image;
+    }
     return id;
   },
   prefetch(uri): Promise {
